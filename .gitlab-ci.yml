@@ -1,8 +1,8 @@
 # Define the stages of your pipeline
 stages:
   - build
-  - test
-  - deploy
+  # - test
+  # - deploy
 
 cache:
   paths:
@@ -20,7 +20,7 @@ build:
 
 # Job to run tests
 test:
-  stage: test
+  stage: build
   image: node:18
   script:
     - npm run test
