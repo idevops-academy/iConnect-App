@@ -69,7 +69,7 @@ deploy:
     - *login
   script:
     - ls
-    - rsync -r -o StrictHostKeyChecking=no ./iconnect-app ec2-user@$HOST_DNS:/home/ec2-user
-    # - scp -r -o StrictHostKeyChecking=no ./junit.xml ec2-user@3.6.93.198:/home/ec2-user
+    #- rsync -r -o StrictHostKeyChecking=no ./iconnect-app ec2-user@$HOST_DNS:/home/ec2-user
+    - scp -r -o StrictHostKeyChecking=no ./iconnect-app ec2-user@3.6.93.198:/home/ec2-user
 
 
