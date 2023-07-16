@@ -1,7 +1,8 @@
+image: node:18
 # Define the stages of your pipeline
 stages:
   - build
-  # - test
+  - test
   # - deploy
 
 cache:
@@ -14,27 +15,26 @@ cache:
 # Job to build the Node.js application
 build:
   stage: build
-  image: node:18
   script:
     - npm ci
 
 # Job to run tests
 test:
-  stage: build
-  image: node:18
+  stage: test
   script:
     - npm run test
 
 #job to package
 package:
   stage: build
-  image: node:18
   script:
     - npm install --omit=dev
   cache: []
+  script:
+    - mkdir myapp && cp -r * myapp/
   artifacts:
     paths:
-      - ./**/*
+      - myapp
 
 # Job to deploy the application
 # deploy:
