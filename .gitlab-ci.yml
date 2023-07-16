@@ -4,7 +4,7 @@ stages:
   - build
   - test
   - package
-  - deploy
+  #- deploy
 
 .login_template: &login
   - 'which ssh-agent || (apt-get update -y && apt-get install openssh-client -y)'
@@ -54,7 +54,7 @@ package:
 #Job to deploy the application
 deploy:
   image: ubuntu:latest
-  stage: deploy
+  stage: build
   cache: []
   variables:
     GIT_STRATEGY: none
@@ -63,5 +63,5 @@ deploy:
     - *login
   script:
     - ls
-    - rsync -r iconnect-app ec2-user@ec2-3-6-93-198.ap-south-1.compute.amazonaws.com:/home/ec2-user
+    #- rsync -r iconnect-app ec2-user@ec2-3-6-93-198.ap-south-1.compute.amazonaws.com:/home/ec2-user
 
