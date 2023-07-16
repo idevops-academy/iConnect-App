@@ -45,7 +45,7 @@ deploy:
   stage: deploy
   cache: []
   variables:
-    - GIT_STRATEGY: none
+    GIT_STRATEGY: none
   script:
     - ls
     - env
