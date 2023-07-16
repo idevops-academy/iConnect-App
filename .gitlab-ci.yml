@@ -31,11 +31,11 @@ package:
     - npm install --omit=dev
   cache: []
   script:
-    - mkdir $CI_PROJECT_DIR/iconnect-app
-    - cp -r * $CI_PROJECT_DIR/iconnect-app
+    - mkdir ../iconnect-app
+    - cp -r * ../iconnect-app
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/iconnect-app
+      - ../iconnect-app
 
 # Job to deploy the application
 # deploy:
