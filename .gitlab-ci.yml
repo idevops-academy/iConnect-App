@@ -40,7 +40,7 @@ package:
     paths:
       - iconnect-app
 
-Job to deploy the application
+#Job to deploy the application
 deploy:
   stage: deploy
   needs: ["package"]
