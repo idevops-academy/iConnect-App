@@ -6,6 +6,18 @@ stages:
   - package
   - deploy
 
+login_template: &login
+  - 'which ssh-agent || (apt-get update -y && apt-get install openssh-client -y)'
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - eval "$(ssh-agent -s)"
+  - ssh-add ~/.ssh/id_rsa
+
+install_rsync: &install_rsync
+  - apt-get update
+  - apt-get install -y rsync
+
 cache:
   paths:
     - node_modules/
@@ -29,8 +41,7 @@ test:
 package:
   stage: package
   before_script:
-    - apt-get update
-    - apt-get install -y rsync
+    - *install_rsync
   script:
     - npm install --omit=dev
     - mkdir iconnect-app
@@ -46,7 +57,10 @@ deploy:
   cache: []
   variables:
     GIT_STRATEGY: none
+  before_script:
+    - *install_rsync
+    - *login
   script:
     - ls
-    - env
+    - rsync -r iconnect-app ec2-user@ec2-3-6-93-198.ap-south-1.compute.amazonaws.com:/home/ec2-user
 
