@@ -4,6 +4,13 @@ stages:
   - test
   - deploy
 
+cache:
+  paths:
+    - node_modules/
+  key:
+    files:
+      - package-lock.json
+
 # Job to build the Node.js application
 build:
   stage: build
