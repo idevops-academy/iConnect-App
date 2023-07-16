@@ -43,7 +43,9 @@ package:
 #Job to deploy the application
 deploy:
   stage: deploy
-  needs: ["package"]
+  cache: []
+  variables:
+    - GIT_STRATEGY: none
   script:
     - ls
     - env
