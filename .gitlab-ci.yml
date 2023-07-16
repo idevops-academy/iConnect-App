@@ -4,6 +4,12 @@ stages:
   # - test
   # - deploy
 
+cache:
+  paths:
+    - node_modules/
+  key:
+    files:
+      - package-lock.json
 
 # Job to build the Node.js application
 build:
@@ -11,12 +17,6 @@ build:
   image: node:18
   script:
     - npm ci
-  cache:
-    paths:
-      - node_modules/
-    key:
-      files:
-        - package-lock.json
 
 # Job to run tests
 test:
@@ -30,7 +30,8 @@ package:
   stage: build
   image: node:18
   script:
-    - npm install --only=prod
+    - npm install --omit=dev
+  cache: []
   artifacts:
     paths:
       - ./**/*
