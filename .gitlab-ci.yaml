@@ -1,0 +1,28 @@
+# Define the stages of your pipeline
+stages:
+  - build
+  - test
+  - deploy
+
+# Job to build the Node.js application
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm ci
+
+# Job to run tests
+test:
+  stage: test
+  image: node:18
+  script:
+    - npm run test
+
+# Job to deploy the application
+# deploy:
+#   stage: deploy
+#   image: node:14
+#   script:
+#     - npm run deploy
+#   only:
+#     - master
