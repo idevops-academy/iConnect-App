@@ -6,7 +6,7 @@ stages:
   - package
   - deploy
 
-login_template: &login
+.login_template: &login
   - 'which ssh-agent || (apt-get update -y && apt-get install openssh-client -y)'
   - mkdir -p ~/.ssh
   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
@@ -14,7 +14,7 @@ login_template: &login
   - eval "$(ssh-agent -s)"
   - ssh-add ~/.ssh/id_rsa
 
-install_rsync: &install_rsync
+.install_rsync: &install_rsync
   - apt-get update
   - apt-get install -y rsync
 
