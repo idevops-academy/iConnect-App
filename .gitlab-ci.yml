@@ -3,7 +3,7 @@ image: node:18
 stages:
   - build
   - test
-  # - deploy
+  - package
 
 cache:
   paths:
@@ -26,7 +26,7 @@ test:
 
 #job to package
 package:
-  stage: build
+  stage: package
   script:
     - npm install --omit=dev
   cache: []
