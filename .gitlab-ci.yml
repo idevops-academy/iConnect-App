@@ -25,6 +25,15 @@ test:
   script:
     - npm run test
 
+package:
+  stage: build
+  image: node:18
+  script:
+    - npm install --only=prod
+  artifacts:
+    paths:
+      - ./**/*
+
 # Job to deploy the application
 # deploy:
 #   stage: deploy
