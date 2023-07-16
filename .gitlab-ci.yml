@@ -27,15 +27,17 @@ test:
 #job to package
 package:
   stage: package
+  before_script:
+    - apt-get update
+    - apt-get install -y rsync
   script:
     - npm install --omit=dev
+    - mkdir iconnect-app
+    - rsync -av --exclude='iconnect-app' . iconnect-app/
   cache: []
-  script:
-    - mkdir ../iconnect-app
-    - cp -r * ../iconnect-app
   artifacts:
     paths:
-      - ../iconnect-app
+      - iconnect-app
 
 # Job to deploy the application
 # deploy:
