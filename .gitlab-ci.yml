@@ -66,9 +66,9 @@ deploy:
     - *install_rsync
     - *login
   script:
-    - sed -i "s/\$username/\'$USER_NAME'/g" install_dependencies.sh
-    - sed -i "s/\$password/\'$USER_PASSWORD'/g" install_dependencies.sh
-    - sed -i "s/\$branchname/\'$CI_COMMIT_REF_NAME'/g" install_dependencies.sh
+    - sed -i "s~$username~$USER_NAME~g" install_dependencies.sh
+    - sed -i "s~$password~$USER_PASSWORD~g" install_dependencies.sh
+    - sed -i "s~$branchname~$CI_COMMIT_REF_NAME~g" install_dependencies.sh
     - cat install_dependencies.sh
     - scp -r -o StrictHostKeyChecking=no ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
     - ssh ec2-user@$HOST_DNS ls -lrt
