@@ -69,7 +69,7 @@ deploy:
     - ls
     - scp -r -o StrictHostKeyChecking=no ./script_test.sh ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
     - ssh ec2-user@$HOST_DNS ls -lrt
-    - ssh ec2-user@$HOST_DNS ./script_test.sh
+    - ssh ec2-user@$HOST_DNS chmod +x ./script_test.sh && ./script_test.sh
     #- ssh ec2-user@$HOST_DNS 'chmod +x /home/ec2-user/script_test.sh && bash -s' < /home/ec2-user/script_test.sh
     #- rsync -rl -o StrictHostKeyChecking=no ./iconnect-app ec2-user@$HOST_DNS:/home/ec2-user
     #- scp -r -o StrictHostKeyChecking=no ./iconnect-app ec2-user@$HOST_DNS:/home/ec2-user
