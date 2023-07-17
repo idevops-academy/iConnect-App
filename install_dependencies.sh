@@ -32,6 +32,7 @@ sudo mkdir -p /var/myapp
 cd /var/myapp
 
 #clone the application from github
-# sudo git clone -b $branchname https://$username:$password@gitlab.com/shaik447/iConnect-App.git
-# cd iConnect-App/
+sudo git clone -b $branchname https://$username:$password@gitlab.com/shaik447/iConnect-App.git
+cd iConnect-App/
 
+npm install --omit=dev
