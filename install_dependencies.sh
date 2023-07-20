@@ -28,11 +28,14 @@ echo "Nginx version:"
 nginx -v
 
 #create directory for cloning the app
-sudo mkdir -p /home/ec2-user/<commit-sha>
-cd /home/ec2-user/<commit-sha>
+echo "Creating application directory with the unique commint hash...."
+sudo mkdir -p /var/myapp/<commit-sha>
+cd /var/myapp/<commit-sha>
 
 #clone the application from github
+echo "Cloning the source branch from the repo to the directory....."
 sudo git clone -b <branchname> https://<username>:<password>@gitlab.com/shaik447/iConnect-App.git
 cd iConnect-App/
 
-npm install --omit=dev
+echo "Installing node dependencies....."
+sudo npm install --omit=dev
