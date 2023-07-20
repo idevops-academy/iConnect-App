@@ -72,6 +72,9 @@ sudo cp nginx/sysmon.conf /etc/nginx/conf.d/
 
 echo "Deleting pm2 app and recreating ...."
 sudo pm2 delete iconnect > /dev/null 2>&1
+sleep 5
+echo "this is current directory"
+pwd
 sudo pm2 start --name iconnect npm -- start
 
 echo "restarting nginx..."
