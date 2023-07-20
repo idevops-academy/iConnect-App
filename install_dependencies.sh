@@ -68,7 +68,7 @@ echo "Installing node dependencies....."
 sudo npm install --omit=dev
 
 echo "Copying nginx config to /etc/nginx/conf.d directory"
-cp nginx/sysmon.conf /etc/nginx/conf.d/
+sudo cp nginx/sysmon.conf /etc/nginx/conf.d/
 
 echo "Deleting pm2 app and recreating ...."
 sudo pm2 delete iconnect > /dev/null 2>&1
