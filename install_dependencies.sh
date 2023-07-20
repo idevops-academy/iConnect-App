@@ -67,9 +67,24 @@ cd iConnect-App/
 echo "Installing node dependencies....."
 sudo npm install --omit=dev
 
+echo "Copying nginx config to /etc/nginx/conf.d directory"
 cp nginx/sysmon.conf /etc/nginx/conf.d/
-pm2 delete iconnect > /dev/null 2>&1
-pm2 start --name iconnect npm -- start
+
+echo "Deleting pm2 app and recreating ...."
+sudo pm2 delete iconnect > /dev/null 2>&1
+sudo pm2 start --name iconnect npm -- start
+
 echo "restarting nginx..."
-systemctl restart nginx
-echo "App Installation Succeeded"
+sudo systemctl restart nginx
+
+# Wait for Nginx to start (optional, if needed)
+sleep 5
+
+# Perform a smoke test with curl
+if curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q 200; then
+    echo "App installation successful."
+    exit 0
+else
+    echo "App installation failed."
+    exit 1
+fi
