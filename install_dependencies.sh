@@ -71,11 +71,11 @@ echo "Copying nginx config to /etc/nginx/conf.d directory"
 sudo cp nginx/sysmon.conf /etc/nginx/conf.d/
 
 echo "Deleting pm2 app and recreating ...."
-sudo pm2 delete iconnect
+sudo pm2 stop all
 sleep 5
 echo "this is current directory"
 pwd
-sudo pm2 start --name iconnect npm -- start
+sudo pm2 start --name iconnect-<commit-sha> npm -- start
 
 echo "restarting nginx..."
 sudo systemctl restart nginx
