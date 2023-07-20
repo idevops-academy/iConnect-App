@@ -74,7 +74,7 @@ echo "Deleting pm2 app and recreating ...."
 sudo pm2 stop all
 sleep 5
 echo "this is current directory"
-pwd
+
 sudo pm2 start --name iconnect-<commit-sha> npm -- start
 
 echo "restarting nginx..."
