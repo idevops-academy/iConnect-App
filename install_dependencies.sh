@@ -81,10 +81,11 @@ sudo systemctl restart nginx
 sleep 5
 
 # Perform a smoke test with curl
-if curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q 200; then
+if curl -s http://localhost | grep -q "iConnect"; then
     echo "App installation successful."
     exit 0
 else
     echo "App installation failed."
     exit 1
 fi
+
