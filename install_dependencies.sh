@@ -46,23 +46,6 @@ else
     echo "Nginx is already installed."
 fi
 
-
-# # Install Git
-# sudo yum install git -y
-
-# # Install Node.js
-# curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo -E bash -
-# sudo yum install -y nodejs
-# sudo npm install -g pm2
-
-
-# # Install Nginx
-# sudo yum install nginx -y
-
-# # Start and enable Nginx
-# sudo systemctl start nginx
-# sudo systemctl enable nginx
-
 # Display installed versions
 echo "Git version:"
 git --version
@@ -83,3 +66,10 @@ cd iConnect-App/
 
 echo "Installing node dependencies....."
 sudo npm install --omit=dev
+
+cp nginx/sysmon.conf /etc/nginx/conf.d/
+pm2 delete iconnect > /dev/null 2>&1
+pm2 start --name iconnect npm -- start
+echo "restarting nginx..."
+systemctl restart nginx
+echo "App Installation Succeeded"
