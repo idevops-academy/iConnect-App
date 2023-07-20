@@ -28,8 +28,8 @@ echo "Nginx version:"
 nginx -v
 
 #create directory for cloning the app
-sudo mkdir -p /var/myapp/<commit-sha>
-cd /var/myapp/<commit-sha>
+sudo mkdir -p /home/ec2-user/<commit-sha>
+cd /home/ec2-user/<commit-sha>
 
 #clone the application from github
 sudo git clone -b <branchname> https://<username>:<password>@gitlab.com/shaik447/iConnect-App.git
