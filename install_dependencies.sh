@@ -85,10 +85,10 @@ sleep 5
 
 # Perform a smoke test with curl
 if curl -s http://localhost | grep -q "iConnect"; then
-    echo "App installation successful."
+    echo "Smoke test successful."
     exit 0
 else
-    echo "App installation failed."
+    echo "Smoke test failed."
     exit 1
 fi
 
