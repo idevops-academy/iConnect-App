@@ -2,9 +2,8 @@ image: node:18
 # Define the stages of your pipeline
 stages:
   - build
-  # - test
-  # - package
-  #- deploy
+  - test
+  - deploy
 
 variables:
   HOST_DNS: ec2-13-233-252-136.ap-south-1.compute.amazonaws.com
@@ -22,46 +21,32 @@ variables:
   - apt-get update
   - apt-get install -y rsync
 
-# cache:
-#   paths:
-#     - node_modules/
-#   key:
-#     files:
-#       - package-lock.json
+cache:
+  paths:
+    - node_modules/
+  key:
+    files:
+      - package-lock.json
 
 # Job to build the Node.js application
-# build:
-#   stage: build
-#   script:
-#     - npm ci
+build:
+  stage: build
+  script:
+    - echo "Building the app..."
+    - npm ci
 
 # # Job to run tests
-# test:
-#   stage: test
-#   script:
-#     - npm run test
-
-# #job to package
-# package:
-#   stage: package
-#   before_script:
-#     - *install_rsync
-#   script:
-#     - npm install --omit=dev
-#     - mkdir iconnect-app
-#     - rsync -av --exclude='iconnect-app' . iconnect-app/
-#   cache: []
-#   artifacts:
-#     paths:
-#       - iconnect-app
+test:
+  stage: test
+  script:
+    - echo "Running tests"
+    - npm run test
 
 #Job to deploy the application to ec2 instance
 deploy:
   image: ubuntu:latest
   stage: build
   cache: []
-  # variables:
-  #   GIT_STRATEGY: none
   before_script:
     - *install_rsync
     - *login
@@ -73,5 +58,3 @@ deploy:
     - scp -r -o StrictHostKeyChecking=no ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
     - ssh ec2-user@$HOST_DNS -- chmod +x ./install_dependencies.sh
     - ssh ec2-user@$HOST_DNS ./install_dependencies.sh
-
-
