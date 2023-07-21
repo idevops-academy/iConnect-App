@@ -3,11 +3,10 @@ image: node:18
 stages:
   - build
   - test
-  - package
   - deploy
 
 variables:
-  HOST_DNS: ec2-13-235-243-244.ap-south-1.compute.amazonaws.com
+  HOST_DNS: ec2-13-232-229-120.ap-south-1.compute.amazonaws.com
 
 .login_template: &login
   - 'which ssh-agent || (apt-get update -y && apt-get install openssh-client -y)'
@@ -17,8 +16,6 @@ variables:
   - chmod 700 ~/.ssh
   - ssh-keyscan $HOST_DNS >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
-
-
 
 .install_rsync: &install_rsync
   - apt-get update
@@ -35,41 +32,29 @@ cache:
 build:
   stage: build
   script:
+    - echo "Building the app..."
     - npm ci
 
-# Job to run tests
+# # Job to run tests
 test:
   stage: test
   script:
+    - echo "Running tests"
     - npm run test
 
-#job to package
-package:
-  stage: package
-  before_script:
-    - *install_rsync
-  script:
-    - npm install --omit=dev
-    - mkdir iconnect-app
-    - rsync -av --exclude='iconnect-app' . iconnect-app/
-  cache: []
-  artifacts:
-    paths:
-      - iconnect-app
-
-#Job to deploy the application
+#Job to deploy the application to ec2 instance
 deploy:
   image: ubuntu:latest
   stage: deploy
   cache: []
-  variables:
-    GIT_STRATEGY: none
   before_script:
     - *install_rsync
     - *login
   script:
-    - ls
-    - rsync -rl -o StrictHostKeyChecking=no ./iconnect-app ec2-user@$HOST_DNS:/home/ec2-user
-    #- scp -r -o StrictHostKeyChecking=no ./iconnect-app ec2-user@$HOST_DNS:/home/ec2-user
-
-
+    - sed -i "s~<username>~$USER_NAME~g" install_dependencies.sh
+    - sed -i "s~<password>~$USER_PASSWORD~g" install_dependencies.sh
+    - sed -i "s~<branchname>~$CI_COMMIT_REF_NAME~g" install_dependencies.sh
+    - sed -i "s~<commit-sha>~$CI_COMMIT_SHORT_SHA~g" install_dependencies.sh
+    - scp -r -o StrictHostKeyChecking=no ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
+    - ssh ec2-user@$HOST_DNS -- chmod +x ./install_dependencies.sh
+    - ssh ec2-user@$HOST_DNS ./install_dependencies.sh
