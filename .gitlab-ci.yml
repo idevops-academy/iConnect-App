@@ -59,6 +59,7 @@ run-api-tests:
     - postman collection run "28682864-cd88e482-b085-455b-bd2d-724fe3717829" -e "28682864-4cd65385-2b2c-4e5d-9e46-d61309015511"
 
 load_performance:
+  stage: test
   variables:
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
 
