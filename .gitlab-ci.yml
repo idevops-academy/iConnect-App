@@ -1,4 +1,8 @@
 image: node:18
+
+include:
+  template: Verify/Load-Performance-Testing.gitlab-ci.yml
+
 # Define the stages of your pipeline
 stages:
   - build
@@ -36,17 +40,35 @@ build:
     - npm ci
 
 # # Job to run tests
-test:
+run-unit-tests:
   stage: test
   script:
     - echo "Running tests"
     - npm run test
+
+
+run-api-tests:
+  stage: test
+  image: cimg/base:2021.04
+  before_script:
+    # Installing Postman CLI
+    - curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+  script:
+    # Login using your Postman API keys
+    - postman login --with-api-key $POSTMAN_API_KEY
+    - postman collection run "28682864-cd88e482-b085-455b-bd2d-724fe3717829" -e "28682864-4cd65385-2b2c-4e5d-9e46-d61309015511"
+
+load_performance:
+  stage: test
+  variables:
+    K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
 
 #Job to deploy the application to ec2 instance
 deploy:
   image: ubuntu:latest
   stage: deploy
   cache: []
+  when: manual
   before_script:
     - *install_rsync
     - *login
