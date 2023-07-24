@@ -9,10 +9,10 @@ stages:
   - build
   - test
   - review
-  - staging
+  - qa
+  - production
 
 variables:
-  HOST_DNS: ec2-13-232-229-120.ap-south-1.compute.amazonaws.com
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
   GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
@@ -61,7 +61,7 @@ run-unit-tests:
     - merge_requests
 
 run-api-tests:
-  stage: staging
+  stage: qa
   image: cimg/base:2021.04
   before_script:
     # Installing Postman CLI
@@ -74,11 +74,13 @@ run-api-tests:
     - main
 
 load_performance:
-  stage: test
+  stage: qa
   variables:
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
   script:
     - echo "test"
+  only:
+    - main
 
 
 #Job to deploy the application to ec2 instance
@@ -86,6 +88,8 @@ Review_App:
   image: ubuntu:latest
   stage: review
   cache: []
+  variables:
+    HOST_DNS: ec2-13-233-161-87.ap-south-1.compute.amazonaws.com
   when: manual
   only:
     - merge_requests
@@ -100,6 +104,9 @@ Review_App:
     - scp -r -o StrictHostKeyChecking=no ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
     - ssh ec2-user@$HOST_DNS -- chmod +x ./install_dependencies.sh
     - ssh ec2-user@$HOST_DNS ./install_dependencies.sh
+  environment:
+    name: review
+    url: http://$HOST_DNS
 
 sonarcloud-check:
   image:
