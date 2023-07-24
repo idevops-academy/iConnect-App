@@ -50,6 +50,7 @@ run-unit-tests:
   script:
     - echo "Running tests"
     - npm run test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
 
 
 run-api-tests:
