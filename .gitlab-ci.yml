@@ -81,8 +81,8 @@ Review_App:
   stage: review
   cache: []
   when: manual
-  # only:
-  #   - merge_requests
+  only:
+    - merge_requests
   before_script:
     - *install_rsync
     - *login
@@ -106,5 +106,5 @@ sonarcloud-check:
   script:
     - sonar-scanner
   only:
-    #- merge_requests
+    - merge_requests
     - main
