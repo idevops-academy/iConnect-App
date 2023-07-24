@@ -54,7 +54,6 @@ run-unit-tests:
     reports:
       junit: junit.xml
 
-
 run-api-tests:
   stage: staging
   image: cimg/base:2021.04
@@ -82,8 +81,8 @@ Review_App:
   stage: review
   cache: []
   when: manual
-  only:
-    - merge_requests
+  # only:
+  #   - merge_requests
   before_script:
     - *install_rsync
     - *login
@@ -107,5 +106,5 @@ sonarcloud-check:
   script:
     - sonar-scanner
   only:
-    - merge_requests
+    #- merge_requests
     - main
