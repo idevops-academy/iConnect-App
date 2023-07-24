@@ -42,6 +42,9 @@ build:
   script:
     - echo "Building the app..."
     - npm ci
+  only:
+    - branches
+    - merge_requests
 
 # # Job to run tests
 run-unit-tests:
@@ -53,6 +56,9 @@ run-unit-tests:
   artifacts:
     reports:
       junit: junit.xml
+  only:
+    - branches
+    - merge_requests
 
 run-api-tests:
   stage: staging
