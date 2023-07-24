@@ -50,6 +50,9 @@ run-unit-tests:
     - echo "Running tests"
     - npm run test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  artifacts:
+    reports:
+      junit: junit.xml
 
 
 run-api-tests:
