@@ -3,8 +3,8 @@ image: node:18
 include:
   template: Verify/Load-Performance-Testing.gitlab-ci.yml
   
-include:
-  template: Code-Quality.gitlab-ci.yml
+# include:
+#   template: Code-Quality.gitlab-ci.yml
 
 
 # Define the stages of your pipeline
