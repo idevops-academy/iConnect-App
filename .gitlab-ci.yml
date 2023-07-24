@@ -69,6 +69,8 @@ load_performance:
   stage: test
   variables:
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
+  script:
+    - echo "test"
 
 
 #Job to deploy the application to ec2 instance
