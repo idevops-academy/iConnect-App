@@ -81,7 +81,7 @@ Review_App:
   stage: review
   cache: []
   variables:
-    HOST_DNS: ec2-3-108-221-8.ap-south-1.compute.amazonaws.com
+    HOST_DNS: ec2-15-206-158-123.ap-south-1.compute.amazonaws.com
   only:
     - merge_requests
   before_script:
@@ -105,7 +105,7 @@ deploy-to-qa:
   stage: qa
   cache: []
   variables:
-    HOST_DNS: ec2-13-232-21-233.ap-south-1.compute.amazonaws.com
+    HOST_DNS: ec2-13-127-42-150.ap-south-1.compute.amazonaws.com
   when: manual
   only:
     - main
@@ -165,7 +165,7 @@ deploy-to-prod:
   stage: production
   cache: []
   variables:
-    HOST_DNS: ec2-3-110-33-180.ap-south-1.compute.amazonaws.com
+    HOST_DNS: ec2-13-127-232-60.ap-south-1.compute.amazonaws.com
   when: manual
   only:
     - main
