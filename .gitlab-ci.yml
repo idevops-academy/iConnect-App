@@ -29,7 +29,7 @@ postman-to-k6:
 #run load performace test in qa environemnt
 load_performance:
   stage: performance
-  dependencies: ["postman-to-k6"]
+  needs: ["postman-to-k6"]
   variables:
     K6_TEST_FILE: k6-script.js
 
