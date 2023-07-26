@@ -82,7 +82,6 @@ Review_App:
   cache: []
   variables:
     HOST_DNS: ec2-3-108-221-8.ap-south-1.compute.amazonaws.com
-  when: manual
   only:
     - merge_requests
   before_script:
