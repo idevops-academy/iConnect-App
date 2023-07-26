@@ -9,7 +9,7 @@ stages:
 
 postman-to-k6:
   stage: performance
-  before-script:
+  before_script:
     - npm install -g postman-to-k6
     - curl -o collection.json "https://api.getpostman.com/collections/28682864-cd88e482-b085-455b-bd2d-724fe3717829" -H "X-Api-Key: $POSTMAN_API_KEY"
     - curl -o environment.json "https://api.getpostman.com/environments/28682864-4cd65385-2b2c-4e5d-9e46-d61309015511" -H "X-Api-Key: $POSTMAN_API_KEY"
