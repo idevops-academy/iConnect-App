@@ -142,7 +142,7 @@ api-tests:
 
 
 #run load performace test in qa environemnt
-UI_tests:
+UI-tests:
   stage: qa
   script:
     - echo "UI Tests"
@@ -151,7 +151,7 @@ UI_tests:
   needs: ["api-tests"]
 
 #run load performace test in qa environemnt
-load_performance:
+load-performance:
   stage: qa
   variables:
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
@@ -161,7 +161,7 @@ load_performance:
     - main
   needs: ["UI-tests"]
 
-deploy_to_prod:
+deploy-to-prod:
   image: ubuntu:latest
   stage: production
   cache: []
