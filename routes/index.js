@@ -14,6 +14,11 @@ router.get('/contacts', function(req, res, next) {
   res.status(200).json(contacts);
 });
 
+//end point to return all available contacts
+router.get('/testcontact', function(req, res, next) {
+  res.status(200).send("this is a test contact");
+});
+
 //end point to search contact by id
 router.get('/contacts/:id', function(req, res, next) {
   var contacts=req.app.get('contactsdb').find();
