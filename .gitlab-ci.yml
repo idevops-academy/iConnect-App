@@ -47,7 +47,7 @@ build:
     - merge_requests
 
 # # Job to run tests
-run-unit-tests:
+unit-tests:
   stage: test
   script:
     - echo "Running tests"
@@ -60,36 +60,28 @@ run-unit-tests:
     - branches
     - merge_requests
 
-run-api-tests:
-  stage: qa
-  image: cimg/base:2021.04
-  before_script:
-    # Installing Postman CLI
-    - curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+#source code analysis with sonar cloud for merge requests and main branch    
+sonarcloud-check:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
   script:
-    # Login using your Postman API keys
-    - postman login --with-api-key $POSTMAN_API_KEY
-    - postman collection run "28682864-cd88e482-b085-455b-bd2d-724fe3717829" -e "28682864-4cd65385-2b2c-4e5d-9e46-d61309015511"
+    - sonar-scanner
   only:
+    - merge_requests
     - main
 
-load_performance:
-  stage: qa
-  variables:
-    K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
-  script:
-    - echo "test"
-  only:
-    - main
-
-
-#Job to deploy the application to ec2 instance
+#Job to deploy the application to ec2 instance for merge request review
 Review_App:
   image: ubuntu:latest
   stage: review
   cache: []
   variables:
-    HOST_DNS: ec2-13-233-161-87.ap-south-1.compute.amazonaws.com
+    HOST_DNS: ec2-3-108-221-8.ap-south-1.compute.amazonaws.com
   when: manual
   only:
     - merge_requests
@@ -108,16 +100,87 @@ Review_App:
     name: review
     url: http://$HOST_DNS
 
-sonarcloud-check:
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  cache:
-    key: "${CI_JOB_NAME}"
-    paths:
-      - .sonar/cache
-  script:
-    - sonar-scanner
+#deploy app to QA to run api, UI & performance tests
+deploy-to-qa:
+  image: ubuntu:latest
+  stage: qa
+  cache: []
+  variables:
+    HOST_DNS: ec2-13-232-21-233.ap-south-1.compute.amazonaws.com
+  when: manual
   only:
-    - merge_requests
     - main
+  before_script:
+    - *install_rsync
+    - *login
+  script:
+    - sed -i "s~<username>~$USER_NAME~g" install_dependencies.sh
+    - sed -i "s~<password>~$USER_PASSWORD~g" install_dependencies.sh
+    - sed -i "s~<branchname>~$CI_COMMIT_REF_NAME~g" install_dependencies.sh
+    - sed -i "s~<commit-sha>~$CI_COMMIT_SHORT_SHA~g" install_dependencies.sh
+    - scp -r -o StrictHostKeyChecking=no ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
+    - ssh ec2-user@$HOST_DNS -- chmod +x ./install_dependencies.sh
+    - ssh ec2-user@$HOST_DNS ./install_dependencies.sh
+  environment:
+    name: qa
+    url: http://$HOST_DNS
+
+#run api tests in qa environment
+api-tests:
+  stage: qa
+  image: cimg/base:2021.04
+  before_script:
+    # Installing Postman CLI
+    - curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+  script:
+    # Login using your Postman API keys
+    - postman login --with-api-key $POSTMAN_API_KEY
+    - postman collection run "28682864-cd88e482-b085-455b-bd2d-724fe3717829" -e "28682864-4cd65385-2b2c-4e5d-9e46-d61309015511"
+  only:
+    - main
+  needs: ["deploy-to-qa"]
+
+
+#run load performace test in qa environemnt
+UI_tests:
+  stage: qa
+  script:
+    - echo "UI Tests"
+  only:
+    - main
+  needs: ["api-tests"]
+
+#run load performace test in qa environemnt
+load_performance:
+  stage: qa
+  variables:
+    K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
+  script:
+    - echo "test"
+  only:
+    - main
+  needs: ["UI-tests"]
+
+deploy_to_prod:
+  image: ubuntu:latest
+  stage: production
+  cache: []
+  variables:
+    HOST_DNS: ec2-3-110-33-180.ap-south-1.compute.amazonaws.com
+  when: manual
+  only:
+    - main
+  before_script:
+    - *install_rsync
+    - *login
+  script:
+    - sed -i "s~<username>~$USER_NAME~g" install_dependencies.sh
+    - sed -i "s~<password>~$USER_PASSWORD~g" install_dependencies.sh
+    - sed -i "s~<branchname>~$CI_COMMIT_REF_NAME~g" install_dependencies.sh
+    - sed -i "s~<commit-sha>~$CI_COMMIT_SHORT_SHA~g" install_dependencies.sh
+    - scp -r -o StrictHostKeyChecking=no ./install_dependencies.sh ec2-user@$HOST_DNS:/home/ec2-user
+    - ssh ec2-user@$HOST_DNS -- chmod +x ./install_dependencies.sh
+    - ssh ec2-user@$HOST_DNS ./install_dependencies.sh
+  environment:
+    name: prod
+    url: http://$HOST_DNS
