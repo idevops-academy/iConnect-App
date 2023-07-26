@@ -8,11 +8,9 @@ stages:
   - test
 
 #run load performace test in qa environemnt
-load-performance:
-  stage: test
-  # variables:
-  #   K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
-  script:
-    - echo "test"
+load_performance:
+  variables:
+    K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
+
 
 
