@@ -5,11 +5,11 @@ include:
 
 # Define the stages of your pipeline
 stages:
-  - qa
+  - performance
 
 #run load performace test in qa environemnt
 load_performance:
-  stage: qa
+  stage: performance
   variables:
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
 
