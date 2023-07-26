@@ -9,6 +9,8 @@ stages:
 
 postman-to-k6:
   stage: performance
+  variables:
+    GIT_STRATEGY: none
   before_script:
     - npm install -g @apideck/postman-to-k6
   script:
@@ -25,10 +27,13 @@ postman-to-k6:
   artifacts:
     paths:
       - k6-script.js
+      - libs
   
 #run load performace test in qa environemnt
 load_performance:
   stage: performance
+  variables:
+    GIT_STRATEGY: none
   needs: ["postman-to-k6"]
   variables:
     K6_TEST_FILE: k6-script.js
