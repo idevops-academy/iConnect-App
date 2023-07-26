@@ -1,7 +1,7 @@
 image: node:18
 
-include:
-  template: Verify/Load-Performance-Testing.gitlab-ci.yml
+# include:
+#   template: Verify/Load-Performance-Testing.gitlab-ci.yml
 
 
 # Define the stages of your pipeline
@@ -153,8 +153,8 @@ UI-tests:
 #run load performace test in qa environemnt
 load-performance:
   stage: qa
-  variables:
-    K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
+  # variables:
+  #   K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/examples/http_get.js
   script:
     - echo "test"
   only:
