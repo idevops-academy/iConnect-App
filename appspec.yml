@@ -1,0 +1,17 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/myapp
+hooks:
+  BeforeInstall:
+    - location: Scripts/UnzipResourceBundle.sh
+  AfterInstall:
+    - location: Scripts/RunResourceTests.sh
+      timeout: 180
+  ApplicationStart:
+    - location: Scripts/RunFunctionalTests.sh
+      timeout: 3600
+  ValidateService:
+    - location: Scripts/MonitorService.sh
+      timeout: 3600
