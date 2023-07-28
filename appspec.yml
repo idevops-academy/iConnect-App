@@ -4,14 +4,15 @@ files:
   - source: /
     destination: /var/myapp
 hooks:
+  ApplicationStop:
+    - location: Scripts/stop_server.sh
+      timeout: 300
   BeforeInstall:
-    - location: Scripts/UnzipResourceBundle.sh
-  AfterInstall:
-    - location: Scripts/RunResourceTests.sh
-      timeout: 180
+    - location: Scripts/install_dependencies.sh
+      timeout: 300
   ApplicationStart:
-    - location: Scripts/RunFunctionalTests.sh
-      timeout: 3600
+    - location: Scripts/start_server.sh
+      timeout: 300
   ValidateService:
-    - location: Scripts/MonitorService.sh
-      timeout: 3600
+    - location: Scripts/smoke_test.sh
+      timeout: 300
