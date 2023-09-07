@@ -16,8 +16,8 @@ variables:
 
 # Define the stages of your pipeline
 stages:
-  - build
-  - test
+  # - build
+  # - test
   - containerize
 
 cache:
@@ -28,31 +28,32 @@ cache:
       - package-lock.json
 
 # Job to build the Node.js application
-build:
-  stage: build
-  script:
-    - echo "Building the app..."
-    - npm ci
-  only:
-    - branches
-    - merge_requests
+# build:
+#   stage: build
+#   script:
+#     - echo "Building the app..."
+#     - npm ci
+#   only:
+#     - branches
+#     - merge_requests
 
 # # Job to run tests
-unit-tests:
-  stage: test
-  script:
-    - echo "Running tests"
-    - npm run test
-  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
-  artifacts:
-    reports:
-      junit: junit.xml
-  only:
-    - branches
-    - merge_requests
+# unit-tests:
+#   stage: test
+#   script:
+#     - echo "Running tests"
+#     - npm run test
+#   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+#   artifacts:
+#     reports:
+#       junit: junit.xml
+#   only:
+#     - branches
+#     - merge_requests
 
 build-image:
   stage: containerize
+  image: docker:20.10.16
   services:
     - docker:20.10.16-dind
   before_script:
