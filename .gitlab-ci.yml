@@ -68,7 +68,7 @@ build-image:
   only:
     - feature/docker-build-push
 
-  container-smoketest:
+container-smoketest:
   stage: test
   image: docker:20.10.16
   services:
