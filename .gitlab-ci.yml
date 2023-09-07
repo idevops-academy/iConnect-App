@@ -3,6 +3,11 @@ image: node:18
 # include:
 #   template: Verify/Load-Performance-Testing.gitlab-ci.yml
 
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 
 # Define the stages of your pipeline
 stages:
