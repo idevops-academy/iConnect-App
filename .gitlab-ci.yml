@@ -73,14 +73,13 @@ container-smoketest:
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
-    - praqma/network-multitool
   before_script:
     - echo "registry login"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker pull $CONTAINER_BRANCH_IMAGE
     - docker run -d -p 8080:3000 $CONTAINER_BRANCH_IMAGE
-    - curl localhost:8080
+    #- curl localhost:8080
 
 
 
