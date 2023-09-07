@@ -1,0 +1,7 @@
+node_modules
+install_dependencies
+Dockerfile
+junit.xml
+sonar-project.properties
+.Jenkinsfile.config.json
+Jenkinsfile
