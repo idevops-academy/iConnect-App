@@ -11,7 +11,12 @@ variables:
   DOCKER_HOST: tcp://docker:2376
   DOCKER_TLS_CERTDIR: "/certs"
   CONTAINER_BRANCH_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest 
+  ECR_REPO_URL: "848889847135.dkr.ecr.ap-south-1.amazonaws.com/idevops"
+  ECR_CONTAINER_NAME: $ECR_REPO_URL:$CI_COMMIT_REF_SLUG
+  AWS_REGION: "ap-south-1"
+  EKS_CLUSTER_NAME: "iDevOps"
+  KUBECONFIG: "$HOME/.kube/config" 
 
 
 # Define the stages of your pipeline
@@ -68,18 +73,26 @@ build-image:
   only:
     - feature/docker-build-push
 
-container-smoketest:
-  stage: test
+build-image-ecr:
+  stage: containerize
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
   before_script:
-    - echo "registry login"
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo "installing aws cli..."
+    - apt-get update -y && apt-get install -y awscli
+    - echo "Logging in to AWS ECR..."
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
+    - echo "Logged in to AWS ECR"
   script:
-    - docker pull $CONTAINER_BRANCH_IMAGE
-    - docker run -d -p 8080:3000 $CONTAINER_BRANCH_IMAGE
-    #- curl localhost:8080
+    - echo "build docker image"
+    - docker build --pull -t $ECR_CONTAINER_NAME .
+    - echo "push docker image"
+    - docker push $ECR_CONTAINER_NAME
+  only:
+    - feature/docker-build-push
+
+
 
 
 

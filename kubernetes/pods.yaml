@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mapapp
+spec:
+  selector:
+    matchLabels:
+      app: mapapp
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mapapp
+    spec:
+      containers:
+      - name: mapapp
+        image: shaik447/mapapp
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+          
