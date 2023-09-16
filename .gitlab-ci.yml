@@ -24,7 +24,7 @@ stages:
   # - build
   # - test
   - containerize
-  - test
+  - deploy
 
 cache:
   paths:
@@ -92,6 +92,16 @@ build-image-ecr:
     - docker push $ECR_CONTAINER_NAME
   only:
     - feature/docker-build-push
+
+deploy:
+  stage: deploy
+  image: bitnami/kubectl:1.25
+  before_script:
+    - echo "installing aws cli..."
+    - apt-get update -y && apt-get install -y awscli
+  script:
+    - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+    - kubectl apply -f kubernetes/
 
 
 
