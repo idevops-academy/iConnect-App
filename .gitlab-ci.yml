@@ -23,7 +23,7 @@ variables:
 stages:
   # - build
   # - test
-  # - containerize
+  - containerize
   - deploy
 
 # cache:
