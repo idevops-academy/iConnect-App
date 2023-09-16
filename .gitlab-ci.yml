@@ -80,7 +80,8 @@ build-image-ecr:
     - docker:20.10.16-dind
   before_script:
     - echo "installing aws cli..."
-    - apt-get update -y && apt-get install -y awscli
+    - apk --update add python3  # Install Python 3 for AWS CLI
+    - pip3 install awscli
     - echo "Logging in to AWS ECR..."
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
     - echo "Logged in to AWS ECR"
