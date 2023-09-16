@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mapapp
+  name: iconnect
 spec:
   selector:
     matchLabels:
-      app: mapapp
+      app: iconnect
   replicas: 3
   template:
     metadata:
       labels:
-        app: mapapp
+        app: iconnect
     spec:
       containers:
-      - name: mapapp
-        image: shaik447/mapapp
+      - name: iconnect
+        image: <imageurl>
         resources:
           limits:
             memory: "128Mi"

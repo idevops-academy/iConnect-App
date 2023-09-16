@@ -4,7 +4,7 @@ metadata:
   name: mapsvc
 spec:
   selector:
-    app: mapapp
+    app: iconnect
   ports:
   - port: 80
     targetPort: 80

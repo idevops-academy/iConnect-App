@@ -73,25 +73,25 @@ stages:
 #   only:
 #     - feature/docker-build-push
 
-# build-image-ecr:
-#   stage: containerize
-#   image: docker:20.10.16
-#   services:
-#     - docker:20.10.16-dind
-#   before_script:
-#     - echo "installing aws cli..."
-#     - apk --update add python3 py3-pip  # Install Python 3 for AWS CLI
-#     - pip3 install awscli
-#     - echo "Logging in to AWS ECR..."
-#     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
-#     - echo "Logged in to AWS ECR"
-#   script:
-#     - echo "build docker image"
-#     - docker build --pull -t $ECR_CONTAINER_NAME .
-#     - echo "push docker image"
-#     - docker push $ECR_CONTAINER_NAME
-#   only:
-#     - feature/docker-build-push
+build-image-ecr:
+  stage: containerize
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  before_script:
+    - echo "installing aws cli..."
+    - apk --update add python3 py3-pip  # Install Python 3 for AWS CLI
+    - pip3 install awscli
+    - echo "Logging in to AWS ECR..."
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
+    - echo "Logged in to AWS ECR"
+  script:
+    - echo "build docker image"
+    - docker build --pull -t $ECR_CONTAINER_NAME .
+    - echo "push docker image"
+    - docker push $ECR_CONTAINER_NAME
+  only:
+    - feature/docker-build-push
 
 deploy:
   stage: deploy
@@ -106,7 +106,8 @@ deploy:
     - chmod +x kubectl
     - mv kubectl /usr/local/bin/
   script:
-    - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+    - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME   #add kubeconfig
+    - sed -i "s~<imageurl>~$ECR_CONTAINER_NAME~g" kubernetes/pods.yaml
     - kubectl apply -f kubernetes/
 
 
