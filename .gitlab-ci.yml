@@ -95,8 +95,11 @@ stages:
 
 deploy:
   stage: deploy
-  image: amazon/aws-cli
+  image: alpine
   before_script:
+    - echo "installing aws cli..."
+    - apk --update add python3 py3-pip curl  # Install Python 3 for AWS CLI
+    - pip3 install awscli
     - echo "installing kubectl..."
     - curl -LO https://dl.k8s.io/release/v1.25.13/bin/linux/amd64/kubectl/bin/linux/amd64/kubectl
     - chmod +x kubectl
