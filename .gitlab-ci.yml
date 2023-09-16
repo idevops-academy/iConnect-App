@@ -26,12 +26,12 @@ stages:
   - containerize
   - deploy
 
-cache:
-  paths:
-    - node_modules/
-  key:
-    files:
-      - package-lock.json
+# cache:
+#   paths:
+#     - node_modules/
+#   key:
+#     files:
+#       - package-lock.json
 
 # Job to build the Node.js application
 # build:
