@@ -23,7 +23,7 @@ variables:
 stages:
   # - build
   # - test
-  - containerize
+  # - containerize
   - deploy
 
 # cache:
@@ -57,48 +57,50 @@ stages:
 #     - branches
 #     - merge_requests
 
-build-image:
-  stage: containerize
-  image: docker:20.10.16
-  services:
-    - docker:20.10.16-dind
-  before_script:
-    - echo "registry login"
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - echo "build docker image"
-    - docker build --pull -t $CONTAINER_BRANCH_IMAGE .
-    - echo "push docker image"
-    - docker push $CONTAINER_BRANCH_IMAGE
-  only:
-    - feature/docker-build-push
+# build-image:
+#   stage: containerize
+#   image: docker:20.10.16
+#   services:
+#     - docker:20.10.16-dind
+#   before_script:
+#     - echo "registry login"
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#   script:
+#     - echo "build docker image"
+#     - docker build --pull -t $CONTAINER_BRANCH_IMAGE .
+#     - echo "push docker image"
+#     - docker push $CONTAINER_BRANCH_IMAGE
+#   only:
+#     - feature/docker-build-push
 
-build-image-ecr:
-  stage: containerize
-  image: docker:20.10.16
-  services:
-    - docker:20.10.16-dind
-  before_script:
-    - echo "installing aws cli..."
-    - apk --update add python3 py3-pip  # Install Python 3 for AWS CLI
-    - pip3 install awscli
-    - echo "Logging in to AWS ECR..."
-    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
-    - echo "Logged in to AWS ECR"
-  script:
-    - echo "build docker image"
-    - docker build --pull -t $ECR_CONTAINER_NAME .
-    - echo "push docker image"
-    - docker push $ECR_CONTAINER_NAME
-  only:
-    - feature/docker-build-push
+# build-image-ecr:
+#   stage: containerize
+#   image: docker:20.10.16
+#   services:
+#     - docker:20.10.16-dind
+#   before_script:
+#     - echo "installing aws cli..."
+#     - apk --update add python3 py3-pip  # Install Python 3 for AWS CLI
+#     - pip3 install awscli
+#     - echo "Logging in to AWS ECR..."
+#     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URL
+#     - echo "Logged in to AWS ECR"
+#   script:
+#     - echo "build docker image"
+#     - docker build --pull -t $ECR_CONTAINER_NAME .
+#     - echo "push docker image"
+#     - docker push $ECR_CONTAINER_NAME
+#   only:
+#     - feature/docker-build-push
 
 deploy:
   stage: deploy
-  image: bitnami/kubectl:1.25
+  image: amazon/aws-cli
   before_script:
-    - echo "installing aws cli..."
-    - apt-get update -y && apt-get install -y awscli
+    - echo "installing kubectl..."
+    - curl -LO https://dl.k8s.io/release/v1.25.13/bin/linux/amd64/kubectl/bin/linux/amd64/kubectl
+    - chmod +x kubectl
+    - mv kubectl /usr/local/bin/
   script:
     - aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
     - kubectl apply -f kubernetes/
